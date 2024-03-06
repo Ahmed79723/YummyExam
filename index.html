@@ -11,14 +11,14 @@
     <title>Ahmed Ashraf</title>
 </head>
 
-<body>
+<body class="d-flex justify-content-center position-relative">
     <!--& ============================================|Loader|============================================ -->
     <div id="loader" class="loading-screen position-fixed top-0 start-0 end-0 bottom-0 bg-black">
         <i class="fa fa-spinner fa-spin fa-5x"></i>
     </div>
     <!--* ============================================|NavBar|============================================ -->
     <!-- <nav id="sideNav" class="position-fixed bg-black d-flex min-vh-100 z-2">
-        <div class="navbox d-flex flex-column justify-content-between py-4">
+        <div class="navbox d-flex flex-column justify-content-between p-4 min-vh-100">
             <div class="nav-links overflow-hidden">
                 <ul class="linksList list-unstyled mx-auto position-relative">
                     <li onclick="showSearch()">Search</li>
@@ -28,7 +28,7 @@
                     <li onclick="showContact()">Contact Us</li>
                 </ul>
             </div>
-            <div class="nav-footer px-3">
+            <div class="nav-footer">
                 <div class="icons">
                     <i class="fa-brands fa-facebook"></i>
                     <i class="fa-brands fa-twitter"></i>
@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="nav-header d-flex flex-column justify-content-between py-4 text-center px-2 bg-white text-black">
-            <img class="logo" src="Imgs/logo.png" alt="" srcset="">
+            <img class="logo" id="home" src="Imgs/logo.png" alt="" srcset="">
             <i class="fa-solid open-close-icon fa-2x fa-align-justify"></i>
             <div>
                 <i class="fa-solid fa-globe d-block"></i>
@@ -87,36 +87,48 @@
             </div>
         </div>
     </div>
-    <!--! ====================================|Global row for Displaying data|================================== -->
-    <div class="container-md">
-        <div id="datarow" class="row py-5 gy-4">
+    <!--~ ============================================|Fake|============================================ -->
+    <div id="fake" class="fake bg-danger min-vh-100 px-4 position-relative start-0 opacity-0">
+        dd
+    </div>
+    <div class="appWrapper d-flex justify-content-center position-relative w-100">
+        <div>
+            <!--! ====================================|Global row for Displaying data|================================== -->
+            <div class="container-md d-flex justify-content-center position-relative start-0 end-0 w-100 overflow-hidden">
+                <div class="position-absolute end-0 top-0 pt-2 pe-3 text-white z-3 d-none back">
+                    <i class="fa-solid fa-xmark fa-2x"></i>
+                </div>
+                <div id="datarow" class="row py-5 gy-4 position-relative w-100 justify-content-center">
+                </div>
+            </div>
+            <!--* ============================================|Search|============================================ -->
+            <section
+                class="d-none position-absolute start-0 end-0 w-100 overflow-hidden d-flex flex-column align-items-center justify-content-center"
+                id="Search">
+                <div class="row Search-box pt-4 pb-4 gy-4 px-5 mx-5 w-100 justify-content-center">
+                    <div class="col-md-6">
+                        <input id="nameSearch" class="form-control" type="text" placeholder="Search By Name">
+                    </div>
+                    <div class="col-md-6">
+                        <input id="firstLetterSearch" maxlength="1" class="form-control" type="text"
+                            placeholder="Search By First Letter">
+                    </div>
+                </div>
+                <div class="container-md h-100 w-100 position-relative">
+                    <div id="innerLoader"
+                        class="inner-loading-screen position-absolute top-0 start-0 end-0 bottom-0 text-white">
+                        <i class="fa fa-spinner fa-spin fa-5x text-white"></i>
+                    </div>
+                    <div id="SearchResultBox" class="row Search-result gy-4 py-4 position-relative w-100 h-100">
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
-    <!--* ============================================|Search|============================================ -->
-    <section class="d-none vh-100 overflow-hidden" id="Search">
-        <div class="row Search-box pt-4 pb-4 px-5 mx-5">
-            <div class="col-md-6">
-                <input id="nameSearch" class="form-control" type="text" placeholder="Search By Name">
-            </div>
-            <div class="col-md-6">
-                <input id="firstLetterSearch" maxlength="1" class="form-control" type="text"
-                    placeholder="Search By First Letter">
-            </div>
-        </div>
-        <div class="container-md h-100 position-relative">
-            <div id="innerLoader"
-                class="inner-loading-screen position-absolute top-0 start-0 end-0 bottom-0 text-white">
-                <i class="fa fa-spinner fa-spin fa-5x text-white"></i>
-            </div>
-            <div id="SearchResultBox" class="row Search-result gy-4 py-4 position-relative w-100 h-100">
-            </div>
-        </div>
-    </section>
+
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 
 </html>
-<!-- <p>${arr[i].strDescription.split(" ").slice(0,20).join(" ")}</p> -->
-<!-- <p>${ing[i].strDescription.split()}</p> -->

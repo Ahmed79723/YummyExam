@@ -73,6 +73,10 @@ $(".side-nav-menu i.open-close-icon").click(() => {
     openSideNav();
   }
 });
+// ============================================|back|============================================ -->
+$("#home").on("click", function () {
+  getSample();
+});
 // !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 // ---------------------------------------------------|2|------------------------------------------------
 // !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -83,6 +87,7 @@ async function getSample() {
   $("#datarow").removeClass("d-none");
   $("#innerLoader").hide();
   $("#SearchResultBox").addClass("d-none");
+  $(".back").addClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/search.php?s=`
   );
@@ -90,6 +95,7 @@ async function getSample() {
   console.log(data);
   displaySample(data.meals);
   $("#loader").fadeOut(300);
+  return data.meals;
 }
 getSample();
 // *==============================|Display Welcome Sample|=============================
@@ -102,7 +108,7 @@ function displaySample(data) {
         <div class="overlay position-absolute bottom-0 end-0 start-0 p-1 d-flex align-items-center fs-2">
           ${data[i].strMeal}         
         </div>
-        <img class="w-100 rounded-3" src=${data[i].strMealThumb} alt="">
+        <img class="w-100 rounded-3" src=${data[i].strMealThumb} alt=${data[i].strMeal}>
     </div>
 </div>
     `;
@@ -121,6 +127,8 @@ function showSearch() {
   $("#innerLoader").hide();
   $("#SearchResultBox").removeClass("d-none");
   $("#SearchResultBox").html("");
+  $(".back").addClass("d-none");
+  // $("#fake").addClass("d-none");
 }
 // ?=================================|Search Functions|===============================
 $("#nameSearch").on("input", function () {
@@ -129,12 +137,14 @@ $("#nameSearch").on("input", function () {
   let SearchByName = $("#nameSearch").val();
   console.log(SearchByName);
   getSearchDataByName(SearchByName);
+  $("#innerLoader").fadeOut(300);
 });
 $("#firstLetterSearch").on("input", function () {
   $("#innerLoader").fadeIn(300);
   let SearchByFirstL = $("#firstLetterSearch").val();
   console.log(SearchByFirstL);
   getSearchByFirstL(SearchByFirstL);
+  $("#innerLoader").fadeOut(300);
 });
 async function getSearchDataByName(name) {
   $("#innerLoader").fadeIn(300);
@@ -144,7 +154,7 @@ async function getSearchDataByName(name) {
   let data = await response.json();
   console.log(data);
   if (data.meals) {
-    $("#innerLoader").fadeIn(300);
+    // $("#innerLoader").fadeIn(300);
     displaySearchByName(data.meals);
     $("#innerLoader").fadeOut(300, function () {
       $("body").css("overflow", "auto");
@@ -168,7 +178,7 @@ async function getSearchByFirstL(term) {
   let data = await response.json();
   console.log(data);
   if (data.meals) {
-    $("#innerLoader").fadeIn(300);
+    // $("#innerLoader").fadeIn(300);
     displaySearchByFL(data.meals);
     $("#innerLoader").fadeOut(300, function () {
       $("body").css("overflow", "auto");
@@ -186,6 +196,7 @@ async function getSearchByFirstL(term) {
 }
 // ?=================================|Search Display Functions|===============================
 function displaySearchByName(params) {
+  // $("#fake").removeClass("d-none");
   let cartona = ``;
   for (let index = 0; index < params.length; index++) {
     cartona += `
@@ -203,6 +214,7 @@ function displaySearchByName(params) {
   $("#SearchResultBox").html(cartona);
 }
 function displaySearchByFL(f) {
+  // $("#fake").removeClass("d-none");
   let cartona = ``;
   for (let index = 0; index < f.length; index++) {
     cartona += `
@@ -228,6 +240,7 @@ function showCategories() {
   $("#datarow").removeClass("d-none");
   $("#innerLoader").hide();
   $("#SearchResultBox").addClass("d-none");
+  // $("#fake").removeClass("d-none");
   getCategories();
 }
 // &===========================================|Get All Categories|=============================
@@ -241,20 +254,26 @@ async function getCategories() {
   );
   let data = await response.json();
   console.log(data);
-  displayCategories(data);
+  displayCategories(data.categories);
   $("#loader").fadeOut(300);
 }
 // &===========================================|Display All Categories|=============================
 function displayCategories(cats) {
   let cartona = ``;
-  for (let i = 0; i < cats.categories.length; i++) {
+  for (let i = 0; i < cats.length; i++) {
     cartona += `
     <div class="col-md-3">
-    <div class="result rounded-2 position-relative overflow-hidden" onclick="getCategoryMeals('${cats.categories[i].strCategory}')">
-        <div class="overlay position-absolute bottom-0 end-0 start-0 p-1 d-flex align-items-center fs-2">
-          ${cats.categories[i].strMeal}         
+    <div class="result rounded-2 position-relative overflow-hidden" onclick="getCategoryMeals('${
+      cats[i].strCategory
+    }')">
+        <div class="overlay position-absolute bottom-0 end-0 start-0 p-1 text-center fs-2">
+          ${cats[i].strCategory}
+          <p class='fs-6'>${cats[i].strCategoryDescription
+            .split(" ")
+            .slice(0, 20)
+            .join(" ")}</p>         
         </div>
-        <img class="w-100 rounded-3" src=${cats.categories[i].strMealThumb} alt="">
+        <img class="w-100 rounded-3" src=${cats[i].strCategoryThumb} alt="">
     </div>
 </div>
     `;
@@ -270,100 +289,15 @@ async function getCategoryMeals(cat) {
   $("#SearchResultBox").addClass("d-none");
   $("#loader").fadeIn();
   $("body").css("overflow", "hidden");
+  $("#fake").removeClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?c=${cat}`
   );
   let data = await response.json();
-  displayCatMeals(data.meals);
+  displaySample(data.meals);
   $("#loader").fadeOut(300, function () {
     $("body").css("overflow", "auto");
   });
-}
-// *<<<<<<<<<<<<<>>>>>>>>>>>>>|Displaying Category Meals|<<<<<<<<<<<<<>>>>>>>>>>>>>
-function displayCatMeals(data) {
-  $("#section").addClass("d-none");
-  let cartona = ``;
-  for (let i = 0; i < data.length; i++) {
-    cartona += `
-    <div class="col-md-3">
-    <div class="result rounded-2 position-relative overflow-hidden" onclick="getMealInfo('${data[i].idMeal}')">
-        <div class="overlay position-absolute bottom-0 end-0 start-0 d-flex align-items-center p-1 fw-bold fs-4">
-        ${data[i].strMeal}
-        </div>
-        <img class="w-100 rounded-3" src=${data[i].strMealThumb} alt="">
-    </div>
-</div>
-    `;
-  }
-  $("#datarow").html(cartona);
-}
-// &===========================================|Displaying Meal Info|====================================
-// *<<<<<<<<<<<<<>>>>>>>>>>>>>|Fetching Meal Info|<<<<<<<<<<<<<>>>>>>>>>>>>>
-async function getMealInfo(data) {
-  $("#Search").addClass("d-none");
-  $("#datarow").removeClass("d-none");
-  $("#innerLoader").hide();
-  $("#SearchResultBox").addClass("d-none");
-  $("#loader").fadeIn();
-  $("body").css("overflow", "hidden");
-  let response = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${data}`
-  );
-  response = await response.json();
-  displayMealInfo(response.meals[0]);
-  $("#loader").fadeOut(300, function () {
-    $("body").css("overflow", "auto");
-  });
-}
-// *<<<<<<<<<<<<<>>>>>>>>>>>>>|Displaying Meal Info|<<<<<<<<<<<<<>>>>>>>>>>>>>
-function displayMealInfo(data) {
-  let Recipes = ``;
-  for (let i = 1; i <= 20; i++) {
-    if (data[`strIngredient${i}`]) {
-      Recipes += `<li class="alert alert-info m-2 p-1">${
-        data[`strMeasure${i}`]
-      } ${data[`strIngredient${i}`]}</li>`;
-    }
-  }
-  let tags = [];
-  if (data.strTags) {
-    tags = data.strTags.split(",");
-  }
-  let tagsStr = "";
-  for (let i = 0; i < tags.length; i++) {
-    tagsStr += `
-      <li class="alert alert-danger m-2 p-1">${tags[i]}</li>`;
-  }
-  let cartona = ``;
-  cartona += `
-    <div class="col-md-4">
-    <div class="rounded-3 overflow-hidden">
-        <img src=${data.strMealThumb} class="w-100 rounded-3" alt="">
-        <div class="title mt-2 fs-2 text-white">
-        ${data.strMeal}
-        </div>
-    </div>
-</div>
-<div class="col-md-8">
-    <div class="instructions">
-        <h3 class="text-white fs-2">Instructions</h3>
-        <p class="text-white">${data.strInstructions}</p>
-        <h4 class="fs-3 text-white">Area : ${data.strArea}</h4>
-        <h4 class="fs-3 text-white">Category : ${data.strCategory}</h4>
-        <h4 class="fs-3 text-white">Recipes :</h4>
-        <ul class="list-unstyled d-flex flex-wrap">
-            ${Recipes}
-        </ul>
-        <h4 class="fs-3 text-white">Tags :</h4>
-        <ul class="list-unstyled d-flex flex-wrap g-3">${tagsStr}</ul>
-        <div class="btns d-flex">
-        <a target="_blank" href=${data.strSource} class="btn btn-success me-2">Source</a>
-        <a target="_blank" href=${data.strYoutube} class="btn btn-danger">Youtube</a>
-        </div>
-    </div>
-</div>
-    `;
-  $("#datarow").html(cartona);
 }
 // !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 // ---------------------------------------------------|5 Area|------------------------------------------------
@@ -384,6 +318,7 @@ async function getListAreas() {
   $("#SearchResultBox").addClass("d-none");
   $("#loader").fadeIn();
   $("body").css("overflow", "hidden");
+  // $("#fake").removeClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/list.php?a=list`
   );
@@ -412,32 +347,15 @@ function displayAreasList(area) {
 async function getAreaMeals(Area) {
   $("#loader").fadeIn();
   $("body").css("overflow", "hidden");
+  // $("#fake").removeClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?a=${Area}`
   );
   let data = await response.json();
-  displayAreaMeals(data.meals);
+  displaySample(data.meals);
   $("#loader").fadeOut(300, function () {
     $("body").css("overflow", "auto");
   });
-}
-// &===========================================|Display Area Meals|====================================
-function displayAreaMeals(am) {
-  let cartona = ``;
-  for (let index = 0; index < am.length; index++) {
-    cartona += `
-    <div class="col-md-3">
-                    <div class="result rounded-2 position-relative overflow-hidden" onclick="getMealInfo('${am[index].idMeal}')">
-                        <div
-                            class="overlay position-absolute bottom-0 end-0 start-0 p-1 fs-2 d-flex align-items-center">
-                            ${am[index].strMeal}
-                        </div>
-                        <img class="w-100 rounded-3" src=${am[index].strMealThumb} alt="" />
-                    </div>
-                </div>
-    `;
-  }
-  $("#datarow").html(cartona);
 }
 // !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 // ---------------------------------------------------|6 Ingredients|------------------------------------
@@ -448,11 +366,10 @@ function showIngredients() {
   $("#datarow").removeClass("d-none");
   $("#innerLoader").hide();
   $("#SearchResultBox").addClass("d-none");
+  // $("#fake").removeClass("d-none");
   listIngredients();
 }
 // *<<<<<<<<<<<<<>>>>>>>>>>>>>|Fetching All Ingredients|<<<<<<<<<<<<<>>>>>>>>>>>>>
-let data1;
-let data;
 async function listIngredients() {
   $("#Search").addClass("d-none");
   $("#datarow").removeClass("d-none");
@@ -460,13 +377,12 @@ async function listIngredients() {
   $("#SearchResultBox").addClass("d-none");
   $("#loader").fadeIn();
   $("body").css("overflow", "hidden");
+  $("#fake").removeClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/list.php?i=list`
   );
-  data = await response.json();
-  data1 = data.meals[0].strDescription.split(" ").slice(0, 20).join(" ");
+  let data = await response.json();
   console.log(data);
-  console.log(data1);
   displayIngredientsList(data.meals);
   $("#loader").fadeOut(300, function () {
     $("body").css("overflow", "auto");
@@ -474,9 +390,15 @@ async function listIngredients() {
 }
 // &===========================================|Display All Ingredients|====================================
 function displayIngredientsList(ing) {
+  let data1;
   let cartona = ``;
-  console.log(data1);
   for (let i = 0; i < ing.length; i++) {
+    data1 = ing[i].strDescription;
+    if (data1) {
+      data1 = ing[i].strDescription.split(" ").slice(0, 20).join(" ");
+    } else {
+      data1 = "No Description found!";
+    }
     cartona += `
     <div class="col-md-3 overflow-hidden">
     <div class="result rounded-2 position-relative overflow-hidden text-center text-white" onclick="getIngredientMeals('${ing[i].strIngredient}')">
@@ -489,39 +411,20 @@ function displayIngredientsList(ing) {
   }
   $("#datarow").html(cartona);
 }
-// <!-- <p>${ing[i].strDescription.split(" ").slice(0,20).join(" ")}</p> -->
-// <!-- <p>${ing[i].strDescription}</p> -->
 // &===========================================|Filter Meals BY Ingredient|====================================
 async function getIngredientMeals(ing) {
   $("#loader").fadeIn();
   $("body").css("overflow", "hidden");
+  // $("#fake").removeClass("d-none");
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ing}
     `
   );
   let data = await response.json();
-  displayIngredientMeals(data.meals);
+  displaySample(data.meals);
   $("#loader").fadeOut(300, function () {
     $("body").css("overflow", "auto");
   });
-}
-// &===========================================|Display Ingredients Meals|====================================
-function displayIngredientMeals(am) {
-  let cartona = ``;
-  for (let index = 0; index < am.length; index++) {
-    cartona += `
-    <div class="col-md-3">
-                    <div class="result rounded-2 position-relative overflow-hidden" onclick="getMealInfo('${am[index].idMeal}')">
-                        <div
-                            class="overlay position-absolute bottom-0 end-0 start-0 p-1 fs-2 d-flex align-items-center">
-                            ${am[index].strMeal}
-                        </div>
-                        <img class="w-100 rounded-3" src=${am[index].strMealThumb} alt="" />
-                    </div>
-                </div>
-    `;
-  }
-  $("#datarow").html(cartona);
 }
 // !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 // ---------------------------------------------------|7 Contact Us|------------------------------------
@@ -553,6 +456,7 @@ let rePasswordAlert;
 function showContact() {
   $("#Search").addClass("d-none");
   $("#datarow").removeClass("d-none");
+  // $("#fake").addClass("d-none");
   // datarow.innerHTML = `
   //   <div class="contact min-vh-100 d-flex justify-content-center align-items-center">
   //   <div class="container w-75 text-center">
@@ -587,7 +491,7 @@ function showContact() {
   datarow.innerHTML = `
 <div class="contact min-vh-100 d-flex justify-content-center align-items-center">
 <div class="container w-75 text-center">
-    <div class="row g-4">
+    <div class="row">
         <div class="col-md-6">
             <input oninput="inputsValidation()" id="nameInput" type="text" class="my-3 form-control" placeholder="Enter Your Name">
             <div id="nameAlert" class="alert alert-danger my-1 text-center d-none">Special characters and numbers not
@@ -818,3 +722,79 @@ function rePasswordValidation() {
     return false;
   }
 }
+// !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+// &===========================================|Displaying Meal Info|====================================
+// !|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+// *<<<<<<<<<<<<<>>>>>>>>>>>>>|Fetching Meal Info|<<<<<<<<<<<<<>>>>>>>>>>>>>
+async function getMealInfo(data) {
+  $("#Search").addClass("d-none");
+  $("#datarow").removeClass("d-none");
+  $("#innerLoader").hide();
+  $("#SearchResultBox").addClass("d-none");
+  $("#loader").fadeIn();
+  $("body").css("overflow", "hidden");
+  let response = await fetch(
+    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${data}`
+  );
+  response = await response.json();
+  displayMealInfo(response.meals[0]);
+  $("#loader").fadeOut(300, function () {
+    $("body").css("overflow", "auto");
+  });
+}
+// *<<<<<<<<<<<<<>>>>>>>>>>>>>|Displaying Meal Info|<<<<<<<<<<<<<>>>>>>>>>>>>>
+function displayMealInfo(data) {
+  $(".back").removeClass("d-none");
+  let Recipes = ``;
+  for (let i = 1; i <= 20; i++) {
+    if (data[`strIngredient${i}`]) {
+      Recipes += `<li class="alert alert-info m-2 p-1">${
+        data[`strMeasure${i}`]
+      } ${data[`strIngredient${i}`]}</li>`;
+    }
+  }
+  let tags = [];
+  if (data.strTags) {
+    tags = data.strTags.split(",");
+  }
+  let tagsStr = "";
+  for (let i = 0; i < tags.length; i++) {
+    tagsStr += `
+      <li class="alert alert-danger m-2 p-1">${tags[i]}</li>`;
+  }
+  let cartona = ``;
+  cartona += `
+    <div class="col-md-4">
+    <div class="rounded-3 overflow-hidden">
+        <img src=${data.strMealThumb} class="w-100 rounded-3" alt="">
+        <div class="title mt-2 fs-2 text-white">
+        ${data.strMeal}
+        </div>
+    </div>
+</div>
+<div class="col-md-8">
+    <div class="instructions">
+        <h3 class="text-white fs-2">Instructions</h3>
+        <p class="text-white">${data.strInstructions}</p>
+        <h4 class="fs-3 text-white">Area : ${data.strArea}</h4>
+        <h4 class="fs-3 text-white">Category : ${data.strCategory}</h4>
+        <h4 class="fs-3 text-white">Recipes :</h4>
+        <ul class="list-unstyled d-flex flex-wrap">
+            ${Recipes}
+        </ul>
+        <h4 class="fs-3 text-white">Tags :</h4>
+        <ul class="list-unstyled d-flex flex-wrap g-3">${tagsStr}</ul>
+        <div class="btns d-flex">
+        <a target="_blank" href=${data.strSource} class="btn btn-success me-2">Source</a>
+        <a target="_blank" href=${data.strYoutube} class="btn btn-danger">Youtube</a>
+        </div>
+    </div>
+</div>
+    `;
+  $("#datarow").html(cartona);
+}
+$(".back").on("click", function () {
+  $("#back").addClass("d-none");
+  console.log("ok");
+  getSample();
+});

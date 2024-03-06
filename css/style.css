@@ -7,6 +7,11 @@
 body {
   background-color: #0d0d0d;
 }
+.fake {
+  height: 100vh;
+  width: fit-content;
+  /* right: 67px */
+}
 /* &====================================================|Loaders|============================================ */
 #loader {
   color: yellow;
@@ -49,7 +54,6 @@ body {
 .nav-tab {
   background-color: #0d0d0d;
 }
-
 .logo {
   width: 50px;
 }
